@@ -7,7 +7,7 @@ import pos.mvc.view.CustomerView;
 
 /**
  *
- * @author User
+ * @author Kasthurisinghe
  */
 public class PosMvc {
 
