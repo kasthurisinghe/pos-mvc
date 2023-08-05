@@ -89,7 +89,7 @@ public class CustomerController {
 
         String query = "UPDATE customer SET CustTitle=?,CustName=?,DOB=?,Salary=?,CustAddress=?,City=?,Province=?, PostalCode=? WHERE CustId=?";
         PreparedStatement preparedStatement = connection.prepareStatement(query);
-        
+
         preparedStatement.setString(9, customerModel.getCustId());
         preparedStatement.setString(1, customerModel.getTitle());
         preparedStatement.setString(2, customerModel.getName());
@@ -100,6 +100,20 @@ public class CustomerController {
         preparedStatement.setString(7, customerModel.getProvince());
         preparedStatement.setString(8, customerModel.getZip());
         if (preparedStatement.executeUpdate() > 0) {
+            return "Success";
+        } else {
+            return "Fail";
+        }
+    }
+
+    public String deleteCustomer(String custId) throws SQLException {
+        Connection connection = DBConnection.getInstance().getConnection();
+
+        String query = "DELETE  FROM customer WHERE CustId=?";
+        PreparedStatement statement = connection.prepareStatement(query);
+        statement.setString(1, custId);
+
+        if (statement.executeUpdate() > 0) {
             return "Success";
         } else {
             return "Fail";

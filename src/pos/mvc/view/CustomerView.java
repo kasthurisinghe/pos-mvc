@@ -164,6 +164,11 @@ public class CustomerView extends javax.swing.JFrame {
 
         delete.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
         delete.setText("Delete Customer");
+        delete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteActionPerformed(evt);
+            }
+        });
 
         custSalarylabel.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         custSalarylabel.setText("Salary :");
@@ -363,6 +368,10 @@ public class CustomerView extends javax.swing.JFrame {
         updateCustomer();
     }//GEN-LAST:event_updateActionPerformed
 
+    private void deleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteActionPerformed
+        deleteCustomer();
+    }//GEN-LAST:event_deleteActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton add;
@@ -500,6 +509,19 @@ public class CustomerView extends javax.swing.JFrame {
             Logger.getLogger(CustomerView.class.getName()).log(Level.SEVERE, null, ex);
             JOptionPane.showMessageDialog(this, "not updated yet");
 
+        }
+    }
+
+    public void deleteCustomer() {
+        try {
+            String custId = custIdText.getText();
+            String resp = customerController.deleteCustomer(custId);
+            JOptionPane.showMessageDialog(this, resp);
+            clear();
+            loadAllCustomers();
+        } catch (SQLException ex) {
+            Logger.getLogger(CustomerView.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(this, ex.getMessage());
         }
     }
 }
