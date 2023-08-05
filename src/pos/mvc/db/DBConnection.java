@@ -15,25 +15,27 @@ import java.util.logging.Logger;
  * @author User
  */
 public class DBConnection {
+
     private static DBConnection dbConnection;
     private Connection connection;
-    
-    private DBConnection(){
+
+    private DBConnection() {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            connection=DriverManager.getConnection("jdbc:mysql://localhost:3306/Supermarket", "root","1234");
-        } 
-        catch (ClassNotFoundException | SQLException ex) {
+            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/Supermarket", "root", "1234");
+        } catch (ClassNotFoundException | SQLException ex) {
             Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    public static DBConnection getInstance(){
+
+    public static DBConnection getInstance() {
         if (dbConnection == null) {
             dbConnection = new DBConnection();
         }
         return dbConnection;
     }
-    public Connection getConnection(){
+
+    public Connection getConnection() {
         return connection;
-    }       
+    }
 }
