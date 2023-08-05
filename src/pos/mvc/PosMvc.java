@@ -3,10 +3,11 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Main.java to edit this template
  */
 package pos.mvc;
+import pos.mvc.view.CustomerView;
 
 /**
  *
- * @author User
+ * @author Kasthurisinghe
  */
 public class PosMvc {
 
@@ -14,7 +15,7 @@ public class PosMvc {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        System.out.println("hello");
+        new CustomerView().setVisible(true);
     }
     
 }
