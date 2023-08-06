@@ -19,6 +19,18 @@ import pos.mvc.modle.CutomerModel;
  */
 public class ItemController {
 
+    public static String deleteItem(String itemCode) throws SQLException {
+        Connection connection = DBConnection.getInstance().getConnection();
+        String query = "DELETE FROM item WHERE ItemCode=?";
+        PreparedStatement preparedStatement = connection.prepareStatement(query);
+        preparedStatement.setString(1, itemCode);
+        if (preparedStatement.executeUpdate() > 0) {
+            return "Sucess";
+        } else {
+            return "Failure";
+        }
+    }
+
     public ArrayList<ItemModel> getAllItems() throws SQLException {
         Connection connection = DBConnection.getInstance().getConnection();
         String query = "SELECT*FROM item";
@@ -68,5 +80,21 @@ public class ItemController {
             return item;
         }
         return null;
+    }
+
+    public String updateItem(ItemModel item) throws SQLException {
+        Connection connection = DBConnection.getInstance().getConnection();
+        String query = "UPDATE item SET Description=?,PackSize=?,UnitPrice=?,QtyOnHand=? WHERE ItemCode=?";
+        PreparedStatement preparedStatement = connection.prepareStatement(query);
+        preparedStatement.setString(5, item.getItemCode());
+        preparedStatement.setString(1, item.getDescription());
+        preparedStatement.setString(2, item.getPackSize());
+        preparedStatement.setDouble(3, item.getUnitPrice());
+        preparedStatement.setInt(4, item.getQoh());
+        if (preparedStatement.executeUpdate() > 0) {
+            return "Sucess";
+        } else {
+            return "Failure";
+        }
     }
 }
