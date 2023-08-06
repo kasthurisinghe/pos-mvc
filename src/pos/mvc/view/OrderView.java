@@ -9,7 +9,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import pos.mvc.controller.CustomerController;
+import pos.mvc.controller.ItemController;
 import pos.mvc.modle.CutomerModel;
+import pos.mvc.modle.ItemModel;
 
 /**
  *
@@ -18,12 +20,14 @@ import pos.mvc.modle.CutomerModel;
 public class OrderView extends javax.swing.JFrame {
 
     private CustomerController customerController;
+    private ItemController itemController;
 
     /**
      * Creates new form OrderView
      */
     public OrderView() {
         customerController = new CustomerController();
+        itemController=new ItemController();
         initComponents();
     }
 
@@ -114,6 +118,11 @@ public class OrderView extends javax.swing.JFrame {
 
         searchItemButton.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         searchItemButton.setText("Search");
+        searchItemButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                searchItemButtonActionPerformed(evt);
+            }
+        });
 
         qtyLabel.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         qtyLabel.setText("QTY :");
@@ -301,6 +310,10 @@ public class OrderView extends javax.swing.JFrame {
         searchCustomer();
     }//GEN-LAST:event_searchCustomerButtonActionPerformed
 
+    private void searchItemButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchItemButtonActionPerformed
+        searchItem();
+    }//GEN-LAST:event_searchItemButtonActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -369,6 +382,21 @@ public class OrderView extends javax.swing.JFrame {
             CutomerModel cust = customerController.getCustomer(custId);
             if (cust != null) {
                 custDataLabel.setText(cust.getName() + "," + cust.getAddress());
+            } else {
+                JOptionPane.showMessageDialog(this, "Customer Not Found");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(OrderView.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(this, ex.getMessage());
+        }
+    }
+
+    private void searchItem() {
+        try {
+            String itemId = itemIdText.getText();
+            ItemModel item = itemController.searchItem(itemId);
+            if (item != null) {
+                itemDataLabel.setText(item.getDescription() + "," + item.getUnitPrice() + "," + item.getQoh());
             } else {
                 JOptionPane.showMessageDialog(this, "Customer Not Found");
             }
