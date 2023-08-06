@@ -4,7 +4,7 @@
  */
 package pos.mvc;
 import pos.mvc.view.CustomerView;
-
+import pos.mvc.view.ItemView;
 /**
  *
  * @author Kasthurisinghe
@@ -15,7 +15,8 @@ public class PosMvc {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        new CustomerView().setVisible(true);
+//        new CustomerView().setVisible(true);
+        new ItemView().setVisible(true);
     }
     
 }
