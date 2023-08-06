@@ -5,6 +5,7 @@
 package pos.mvc;
 import pos.mvc.view.CustomerView;
 import pos.mvc.view.ItemView;
+import pos.mvc.view.OrderView;
 /**
  *
  * @author Kasthurisinghe
@@ -16,7 +17,8 @@ public class PosMvc {
      */
     public static void main(String[] args) {
 //        new CustomerView().setVisible(true);
-        new ItemView().setVisible(true);
+//        new ItemView().setVisible(true);
+        new OrderView().setVisible(true);
     }
     
 }
