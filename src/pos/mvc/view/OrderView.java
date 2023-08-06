@@ -5,16 +5,20 @@
 package pos.mvc.view;
 
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import pos.mvc.controller.CustomerController;
 import pos.mvc.controller.ItemController;
+import pos.mvc.controller.OrderController;
 import pos.mvc.modle.CutomerModel;
 import pos.mvc.modle.ItemModel;
 import pos.mvc.modle.OrderDetailModle;
+import pos.mvc.modle.OrderModle;
 
 /**
  *
@@ -24,6 +28,7 @@ public class OrderView extends javax.swing.JFrame {
 
     private CustomerController customerController;
     private ItemController itemController;
+    private OrderController orderController;
     ArrayList<OrderDetailModle> orderdetailModels = new ArrayList<>();
 
     /**
@@ -32,7 +37,7 @@ public class OrderView extends javax.swing.JFrame {
     public OrderView() {
         customerController = new CustomerController();
         itemController = new ItemController();
-
+        orderController=new OrderController();
         initComponents();
         loadtable();
     }
@@ -247,6 +252,11 @@ public class OrderView extends javax.swing.JFrame {
         placeOrderButton.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         placeOrderButton.setText("Place Order");
         placeOrderButton.setToolTipText("");
+        placeOrderButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                placeOrderButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout tablePanelLayout = new javax.swing.GroupLayout(tablePanel);
         tablePanel.setLayout(tablePanelLayout);
@@ -319,6 +329,10 @@ public class OrderView extends javax.swing.JFrame {
     private void searchItemButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchItemButtonActionPerformed
         searchItem();
     }//GEN-LAST:event_searchItemButtonActionPerformed
+
+    private void placeOrderButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_placeOrderButtonActionPerformed
+        placeOrder();
+    }//GEN-LAST:event_placeOrderButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -436,4 +450,24 @@ Object []rowdata={od.getItemCode(),od.getQty(),od.getDiscount()};
         discountText.setText("");
         qtyText.setText("");
         itemDataLabel.setText("");}
+
+    private void placeOrder() {
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            OrderModle orderModel = new OrderModle(orderIdText.getText(), sdf.format(new Date()), customerIdText.getText());
+            
+            String result = orderController.placeOrder(orderModel, orderdetailModels);
+            JOptionPane.showMessageDialog(this, result);
+        } catch (SQLException ex) {
+            Logger.getLogger(OrderView.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(this, ex.getMessage());
+        }
+        clearForm();
+    }
+
+    private void clearForm() {
+        loadtable();
+        orderIdText.setText("");
+        customerIdText.setText("");
+    }
 }
