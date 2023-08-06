@@ -49,7 +49,7 @@ public class ItemView extends javax.swing.JFrame {
         descriptionLabel = new javax.swing.JLabel();
         packSizeText = new javax.swing.JTextField();
         packSizeLabel = new javax.swing.JLabel();
-        unitSizeText = new javax.swing.JTextField();
+        unitPriceText = new javax.swing.JTextField();
         unitSizeLabel = new javax.swing.JLabel();
         qohText = new javax.swing.JTextField();
         qohLabel = new javax.swing.JLabel();
@@ -103,15 +103,15 @@ public class ItemView extends javax.swing.JFrame {
         packSizeLabel.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         packSizeLabel.setText("Pack Size :");
 
-        unitSizeText.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        unitSizeText.addActionListener(new java.awt.event.ActionListener() {
+        unitPriceText.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        unitPriceText.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                unitSizeTextActionPerformed(evt);
+                unitPriceTextActionPerformed(evt);
             }
         });
 
         unitSizeLabel.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        unitSizeLabel.setText("Unit Size :");
+        unitSizeLabel.setText("Unit Price :");
 
         qohText.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         qohText.addActionListener(new java.awt.event.ActionListener() {
@@ -167,7 +167,7 @@ public class ItemView extends javax.swing.JFrame {
                     .addComponent(itemCodeText, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                         .addComponent(packSizeText, javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(unitSizeText, javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(unitPriceText, javax.swing.GroupLayout.Alignment.LEADING)
                         .addComponent(qohText, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 169, Short.MAX_VALUE)))
                 .addContainerGap(41, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, formPanelLayout.createSequentialGroup()
@@ -197,7 +197,7 @@ public class ItemView extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(unitSizeLabel)
-                    .addComponent(unitSizeText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(unitPriceText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(qohText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -286,16 +286,16 @@ public class ItemView extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_itemCodeTextActionPerformed
 
-    private void unitSizeTextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_unitSizeTextActionPerformed
+    private void unitPriceTextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_unitPriceTextActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_unitSizeTextActionPerformed
+    }//GEN-LAST:event_unitPriceTextActionPerformed
 
     private void qohTextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_qohTextActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_qohTextActionPerformed
 
     private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addButtonActionPerformed
-
+        saveItem();
     }//GEN-LAST:event_addButtonActionPerformed
 
     private void updateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateButtonActionPerformed
@@ -307,7 +307,7 @@ public class ItemView extends javax.swing.JFrame {
     }//GEN-LAST:event_deleteButtonActionPerformed
 
     private void itemTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_itemTableMouseClicked
-
+        searchItem();
     }//GEN-LAST:event_itemTableMouseClicked
 
 
@@ -329,8 +329,8 @@ public class ItemView extends javax.swing.JFrame {
     private javax.swing.JLabel qohLabel;
     private javax.swing.JTextField qohText;
     private javax.swing.JPanel tablePanel;
+    private javax.swing.JTextField unitPriceText;
     private javax.swing.JLabel unitSizeLabel;
-    private javax.swing.JTextField unitSizeText;
     private javax.swing.JButton updateButton;
     // End of variables declaration//GEN-END:variables
 public void loadAllItems() {
@@ -344,13 +344,58 @@ public void loadAllItems() {
             };
             itemTable.setModel(dtm);
             ArrayList<ItemModel> itemModels = itemController.getAllItems();
-            for(ItemModel item:itemModels){
-                Object [] row={item.getItemCode(),item.getDescription(),item.getPackSize(),item.getPackSize(),item.getQoh()};
+            for (ItemModel item : itemModels) {
+                Object[] row = {item.getItemCode(), item.getDescription(), item.getPackSize(), item.getPackSize(), item.getQoh()};
                 dtm.addRow(row);
             }
         } catch (SQLException ex) {
             Logger.getLogger(ItemView.class.getName()).log(Level.SEVERE, null, ex);
             JOptionPane.showMessageDialog(this, ex.getMessage());
         }
+    }
+
+    private void saveItem() {
+        try {
+            ItemModel itemModel = new ItemModel(itemCodeText.getText(),
+                    descriptionText.getText(),
+                    packSizeText.getText(),
+                    Double.parseDouble(unitPriceText.getText()),
+                    Integer.parseInt(qohText.getText()));
+            String resp = itemController.saveItem(itemModel);
+            JOptionPane.showMessageDialog(this, resp);
+            clear();
+            loadAllItems();
+        } catch (SQLException ex) {
+            Logger.getLogger(ItemView.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(this, ex.getMessage());
         }
     }
+
+    private void clear() {
+        itemCodeText.setText("");
+        descriptionText.setText("");
+        packSizeText.setText("");
+        unitPriceText.setText("");
+        qohText.setText("");
+    }
+    private void searchItem(){
+        try {
+            String itemCode=itemTable.getValueAt(itemTable.getSelectedRow(), 0).toString();
+            ItemModel itemModel=itemController.searchItem(itemCode);
+            
+            if(itemModel!=null){
+                itemCodeText.setText(itemModel.getItemCode());
+                descriptionText.setText(itemModel.getDescription());
+                packSizeText.setText(itemModel.getPackSize());
+                unitPriceText.setText(Double.toString(itemModel.getUnitPrice()));
+                qohText.setText(Integer.toString(itemModel.getQoh()));
+            }
+            else{
+                JOptionPane.showMessageDialog(this, "Item not found");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ItemView.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(this, ex.getMessage());
+        }
+    }
+}
