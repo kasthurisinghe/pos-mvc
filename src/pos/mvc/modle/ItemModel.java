@@ -13,13 +13,13 @@ public class ItemModel {
     private String itemCode;
     private String description;
     private String packSize;
-    private String unitPrice;
-    private String qoh;
+    private Double unitPrice;
+    private Integer qoh;
 
     public ItemModel() {
     }
 
-    public ItemModel(String itemCode, String description, String packSize, String unitPrice, String qoh) {
+    public ItemModel(String itemCode, String description, String packSize, Double unitPrice, Integer qoh) {
         this.itemCode = itemCode;
         this.description = description;
         this.packSize = packSize;
@@ -72,34 +72,34 @@ public class ItemModel {
     /**
      * @return the unitPrice
      */
-    public String getUnitPrice() {
+    public Double getUnitPrice() {
         return unitPrice;
     }
 
     /**
      * @param unitPrice the unitPrice to set
      */
-    public void setUnitPrice(String unitPrice) {
+    public void setUnitPrice(Double unitPrice) {
         this.unitPrice = unitPrice;
     }
 
     /**
      * @return the qoh
      */
-    public String getQoh() {
+    public Integer getQoh() {
         return qoh;
     }
 
     /**
      * @param qoh the qoh to set
      */
-    public void setQoh(String qoh) {
+    public void setQoh(Integer qoh) {
         this.qoh = qoh;
     }
 
     @Override
     public String toString() {
         return "ItemModel{" + "itemCode=" + itemCode + ", description=" + description + ", packSize=" + packSize + ", unitPrice=" + unitPrice + ", qoh=" + qoh + '}';
-    }   
+    }
 
 }

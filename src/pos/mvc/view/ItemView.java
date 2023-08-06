@@ -4,17 +4,30 @@
  */
 package pos.mvc.view;
 
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import pos.mvc.controller.ItemController;
+import pos.mvc.modle.ItemModel;
+
 /**
  *
  * @author User
  */
 public class ItemView extends javax.swing.JFrame {
 
+    private ItemController itemController;
+
     /**
      * Creates new form ItemView
      */
     public ItemView() {
+        itemController = new ItemController();
         initComponents();
+        loadAllItems();
     }
 
     /**
@@ -40,12 +53,12 @@ public class ItemView extends javax.swing.JFrame {
         unitSizeLabel = new javax.swing.JLabel();
         qohText = new javax.swing.JTextField();
         qohLabel = new javax.swing.JLabel();
-        add = new javax.swing.JButton();
-        update = new javax.swing.JButton();
-        delete = new javax.swing.JButton();
+        addButton = new javax.swing.JButton();
+        updateButton = new javax.swing.JButton();
+        deleteButton = new javax.swing.JButton();
         tablePanel = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        costomerTable = new javax.swing.JTable();
+        itemTable = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -110,28 +123,28 @@ public class ItemView extends javax.swing.JFrame {
         qohLabel.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         qohLabel.setText("QOH :");
 
-        add.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
-        add.setText("Save Customer");
-        add.addActionListener(new java.awt.event.ActionListener() {
+        addButton.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        addButton.setText("Save Item");
+        addButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                addActionPerformed(evt);
+                addButtonActionPerformed(evt);
             }
         });
 
-        update.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
-        update.setText("Update Customer");
-        update.setActionCommand("Update Item");
-        update.addActionListener(new java.awt.event.ActionListener() {
+        updateButton.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        updateButton.setText("Update Item");
+        updateButton.setActionCommand("Update Item");
+        updateButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                updateActionPerformed(evt);
+                updateButtonActionPerformed(evt);
             }
         });
 
-        delete.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
-        delete.setText("Delete Item");
-        delete.addActionListener(new java.awt.event.ActionListener() {
+        deleteButton.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        deleteButton.setText("Delete Item");
+        deleteButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                deleteActionPerformed(evt);
+                deleteButtonActionPerformed(evt);
             }
         });
 
@@ -159,11 +172,11 @@ public class ItemView extends javax.swing.JFrame {
                 .addContainerGap(41, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, formPanelLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(delete)
+                .addComponent(deleteButton)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(update)
+                .addComponent(updateButton)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(add)
+                .addComponent(addButton)
                 .addGap(43, 43, 43))
         );
         formPanelLayout.setVerticalGroup(
@@ -191,13 +204,13 @@ public class ItemView extends javax.swing.JFrame {
                     .addComponent(qohLabel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(delete)
-                    .addComponent(update)
-                    .addComponent(add))
+                    .addComponent(deleteButton)
+                    .addComponent(updateButton)
+                    .addComponent(addButton))
                 .addGap(37, 37, 37))
         );
 
-        costomerTable.setModel(new javax.swing.table.DefaultTableModel(
+        itemTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -208,12 +221,12 @@ public class ItemView extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        costomerTable.addMouseListener(new java.awt.event.MouseAdapter() {
+        itemTable.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                costomerTableMouseClicked(evt);
+                itemTableMouseClicked(evt);
             }
         });
-        jScrollPane1.setViewportView(costomerTable);
+        jScrollPane1.setViewportView(itemTable);
 
         javax.swing.GroupLayout tablePanelLayout = new javax.swing.GroupLayout(tablePanel);
         tablePanel.setLayout(tablePanelLayout);
@@ -226,10 +239,7 @@ public class ItemView extends javax.swing.JFrame {
         );
         tablePanelLayout.setVerticalGroup(
             tablePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, tablePanelLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 222, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 302, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout basePanelLayout = new javax.swing.GroupLayout(basePanel);
@@ -249,7 +259,7 @@ public class ItemView extends javax.swing.JFrame {
                 .addComponent(headerPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(formPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(37, 37, 37)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(tablePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -284,29 +294,27 @@ public class ItemView extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_qohTextActionPerformed
 
-    private void addActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addActionPerformed
-        saveCustomer();
-    }//GEN-LAST:event_addActionPerformed
+    private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addButtonActionPerformed
 
-    private void updateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateActionPerformed
-        updateCustomer();
-    }//GEN-LAST:event_updateActionPerformed
+    }//GEN-LAST:event_addButtonActionPerformed
 
-    private void deleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteActionPerformed
-        deleteCustomer();
-    }//GEN-LAST:event_deleteActionPerformed
+    private void updateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateButtonActionPerformed
 
-    private void costomerTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_costomerTableMouseClicked
-        searchCustomer();
-    }//GEN-LAST:event_costomerTableMouseClicked
+    }//GEN-LAST:event_updateButtonActionPerformed
 
-    
+    private void deleteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteButtonActionPerformed
+
+    }//GEN-LAST:event_deleteButtonActionPerformed
+
+    private void itemTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_itemTableMouseClicked
+
+    }//GEN-LAST:event_itemTableMouseClicked
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton add;
+    private javax.swing.JButton addButton;
     private javax.swing.JPanel basePanel;
-    private javax.swing.JTable costomerTable;
-    private javax.swing.JButton delete;
+    private javax.swing.JButton deleteButton;
     private javax.swing.JLabel descriptionLabel;
     private javax.swing.JTextField descriptionText;
     private javax.swing.JPanel formPanel;
@@ -314,6 +322,7 @@ public class ItemView extends javax.swing.JFrame {
     private javax.swing.JPanel headerPanel;
     private javax.swing.JLabel itemCodeLabel;
     private javax.swing.JTextField itemCodeText;
+    private javax.swing.JTable itemTable;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel packSizeLabel;
     private javax.swing.JTextField packSizeText;
@@ -322,6 +331,26 @@ public class ItemView extends javax.swing.JFrame {
     private javax.swing.JPanel tablePanel;
     private javax.swing.JLabel unitSizeLabel;
     private javax.swing.JTextField unitSizeText;
-    private javax.swing.JButton update;
+    private javax.swing.JButton updateButton;
     // End of variables declaration//GEN-END:variables
-}
+public void loadAllItems() {
+        try {
+            String[] collumns = {"Code", "Description", "Pack Size", "Unit Price", "Quantity on Hand"};
+            DefaultTableModel dtm;
+            dtm = new DefaultTableModel(collumns, 0) {
+                public boolean isCellEditable(int row, int column) {
+                    return false;
+                }
+            };
+            itemTable.setModel(dtm);
+            ArrayList<ItemModel> itemModels = itemController.getAllItems();
+            for(ItemModel item:itemModels){
+                Object [] row={item.getItemCode(),item.getDescription(),item.getPackSize(),item.getPackSize(),item.getQoh()};
+                dtm.addRow(row);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ItemView.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(this, ex.getMessage());
+        }
+        }
+    }
