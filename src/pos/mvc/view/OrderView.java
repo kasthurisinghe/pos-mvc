@@ -5,13 +5,16 @@
 package pos.mvc.view;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 import pos.mvc.controller.CustomerController;
 import pos.mvc.controller.ItemController;
 import pos.mvc.modle.CutomerModel;
 import pos.mvc.modle.ItemModel;
+import pos.mvc.modle.OrderDetailModle;
 
 /**
  *
@@ -21,14 +24,17 @@ public class OrderView extends javax.swing.JFrame {
 
     private CustomerController customerController;
     private ItemController itemController;
+    ArrayList<OrderDetailModle> orderdetailModels = new ArrayList<>();
 
     /**
      * Creates new form OrderView
      */
     public OrderView() {
         customerController = new CustomerController();
-        itemController=new ItemController();
+        itemController = new ItemController();
+
         initComponents();
+        loadtable();
     }
 
     /**
@@ -130,7 +136,7 @@ public class OrderView extends javax.swing.JFrame {
         qtyText.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
 
         discountLabel.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        discountLabel.setText("Dsicount :");
+        discountLabel.setText("Discount :");
 
         discountText.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
 
@@ -303,7 +309,7 @@ public class OrderView extends javax.swing.JFrame {
     }//GEN-LAST:event_orderIdTextActionPerformed
 
     private void addItemButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addItemButtonActionPerformed
-        // TODO add your handling code here:
+        addToTable();
     }//GEN-LAST:event_addItemButtonActionPerformed
 
     private void searchCustomerButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchCustomerButtonActionPerformed
@@ -405,4 +411,29 @@ public class OrderView extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, ex.getMessage());
         }
     }
+
+    private void loadtable() {
+        String[] columns = {"Item Code", "Quantity", "Discount"};
+        DefaultTableModel dtm = new DefaultTableModel(columns, 0) {
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+        itemTable.setModel(dtm);
+    }
+
+    private void addToTable() {
+        OrderDetailModle od = new OrderDetailModle("", itemIdText.getText(), Integer.parseInt(qtyText.getText()), Double.parseDouble(discountText.getText()));
+        orderdetailModels.add(od);
+Object []rowdata={od.getItemCode(),od.getQty(),od.getDiscount()};
+        DefaultTableModel dtm=(DefaultTableModel) itemTable.getModel();
+        dtm.addRow(rowdata);
+        cleanItemData();
+    }
+
+    private void cleanItemData() {
+        itemIdText.setText("");
+        discountText.setText("");
+        qtyText.setText("");
+        itemDataLabel.setText("");}
 }
